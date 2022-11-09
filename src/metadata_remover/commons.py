@@ -15,9 +15,7 @@ def r(f):
       os.remove(f)
 
 # Function to open website if prerequisite software is not found in PC.    
-def detect(cmd,web,snam,pkg):
-        cls()
-    
+def detect(cmd,web,snam,pkg):    
         if platform.system().lower() == 'windows' =='windows':
               if os.system(cmd+'>chk')!=0:
                 print('\nError: '+pkg+' is not detected!')

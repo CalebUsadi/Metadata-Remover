@@ -24,7 +24,7 @@ def __load_all_parsers():
             continue
         basename = os.path.basename(fname)
         name, _ = os.path.splitext(basename)
-        importlib.import_module('.' + name, package='libmat2')
+        importlib.import_module('.' + name, package='metadata_remover.libmat2')
 
 
 __load_all_parsers()

@@ -5,8 +5,10 @@ A Cross-platform opensource Metadata Remover using exiftool and ffmpeg to saniti
 '''
 
 import os
+import metadata_remover.mat2 as mat2
 import metadata_remover.commons as c
 import platform
+from shutil import move
 
 # Function to write given message to file named log in append mode.
 def w(msg,file='log'):
@@ -51,7 +53,6 @@ def vid(x):
 # Function to remove metadata from single image or video file. It uses img() and vid() internally.
 # x denotes file given as input , y can be either i for images or v for videos , mode can be n for normal mode, or b for bulk processing mode.
 def singly(x,y,mode='n'):
-  print(y)
   autoexif()
   c.exiftool()
   flag=0
@@ -73,14 +74,14 @@ def singly(x,y,mode='n'):
     flag=1
 
   else: 
-    os.makedirs('tmp')
-    y=c.copy(x,'tmp')
-    os.chdir('tmp')
-    os.system('py ../mat2.py ' + x)
-    y=c.move(x.split('.')[0]+'.cleaned.'+x.split('.')[1],'..')
-    os.remove(x)
-    os.rmdir('tmp')
-    os.chdir('..')
+    # os.makedirs('tmp')
+    # y=c.copy(x,'tmp')
+    # os.chdir('tmp')
+    mat2.main([x])
+    y=move(x.split('.')[0]+'.cleaned.'+x.split('.')[1],'..')
+    # os.remove(x)
+    # os.rmdir('tmp')
+    # os.chdir('..')
 
   if flag==0:
     print("\n Invalid File for processing!")

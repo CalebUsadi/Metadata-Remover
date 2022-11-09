@@ -11,8 +11,8 @@ import unicodedata
 import concurrent.futures
 
 try:
-    from libmat2 import parser_factory, UNSUPPORTED_EXTENSIONS
-    from libmat2 import check_dependencies, UnknownMemberPolicy
+    from metadata_remover.libmat2 import parser_factory, UNSUPPORTED_EXTENSIONS
+    from metadata_remover.libmat2 import check_dependencies, UnknownMemberPolicy
 except ValueError as ex:
     print(ex)
     sys.exit(1)
