@@ -4,7 +4,7 @@
 A Cross-platform opensource Metadata Remover using exiftool and ffmpeg to sanitize your images before posting on internet.
 '''
 
-import os, time
+import os
 import metadata_remover.commons as c
 import platform
 
@@ -16,7 +16,7 @@ def w(msg,file='log'):
 # Function to read and display metadata of a file.  
 def meta(file):
   os.system('exiftool '+file+' >meta.txt')
-  c.c.display('meta.txt')
+  c.display('meta.txt')
   os.remove('meta.txt')
 
 # Function to rename exiftool(-k).exe as exiftool.exe in windows.
@@ -51,69 +51,63 @@ def vid(x):
 # Function to remove metadata from single image or video file. It uses img() and vid() internally.
 # x denotes file given as input , y can be either i for images or v for videos , mode can be n for normal mode, or b for bulk processing mode.
 def singly(x,y,mode='n'):
- autoexif()
- c.exiftool()
- flag=0
-
- if os.path.exists(x)==False:
-   print("File Doesn't Exist!\n")
-   time.sleep(3)
-   exit(0)
+  print(y)
+  autoexif()
+  c.exiftool()
+  flag=0
    
- # should include function detect to detect exiftool [imp]
- if y.lower()=='i':
-   v=('.jpg','.gif','.bmp','.tiff','.jpeg','.png')
-   for i in v:
-    if x.lower().endswith(i):   
-      os.system("exiftool "+x+">input.txt")
-      c.copy('input.txt','input_log.txt')
-      img(x)
-      flag=1
-      os.system("exiftool "+x+">output.txt")
-      c.copy('output.txt','output_log.txt')
+  # should include function detect to detect exiftool [imp]
+  if y =='i':  
+    os.system("exiftool "+x+">input.txt")
+    c.copy('input.txt','input_log.txt')
+    img(x)
+    flag=1
+    os.system("exiftool "+x+">output.txt")
+    c.copy('output.txt','output_log.txt')
 
- elif y.lower()=='v':
-   c.ffmpeg()
-   v=('.mp4','.mov','.webm','.ogv','.flv','.wmv','.avi','.mkv','.vob','.ogg','.3gp')
-   for i in v:
-    if x.lower().endswith(i):   
-      os.system("exiftool "+x+">input.txt")
-      c.copy('input.txt','input_log.txt')
-      vid(x)
-      flag=1
-    
- else:
-   print(' Unsupported File Format!')
-   return 0
+  elif y =='v':
+    c.ffmpeg()
+    os.system("exiftool "+x+">input.txt")
+    c.copy('input.txt','input_log.txt')
+    vid(x)
+    flag=1
 
- if mode=='n':
+  else: 
+    os.makedirs('tmp')
+    y=c.copy(x,'tmp')
+    os.chdir('tmp')
+    os.system('py ../mat2.py ' + x)
+    y=c.move(x.split('.')[0]+'.cleaned.'+x.split('.')[1],'..')
+    os.remove(x)
+    os.rmdir('tmp')
+    os.chdir('..')
 
   if flag==0:
     print("\n Invalid File for processing!")
     c.wait()
     exit()
 
- if ((os.path.exists('input.txt')==True)and(os.path.exists('output.txt')==True)):
-  if os.path.getsize('output.txt')==0:
-    c.cls()
-    print(' Error Processing File!')
-  elif os.path.getsize('input.txt')>os.path.getsize('output.txt'):
-    print(x+': Metadata removed successfully!')
-    w(x+': Metadata removed successfully!')
-  elif os.path.getsize('input.txt')==os.path.getsize('output.txt'):
-    print(x+": No significant change!")
-    w(x+':No significant change!')
-    
-  else:
-    print(x+": No cleaning done!")
-    w(x+':No cleaning done!')
-  os.remove('input.txt')
-  os.remove('output.txt')
+  if ((os.path.exists('input.txt')==True)and(os.path.exists('output.txt')==True)):
+    if os.path.getsize('output.txt')==0:
+      c.cls()
+      print(' Error Processing File!')
+    elif os.path.getsize('input.txt')>os.path.getsize('output.txt'):
+      print(x+': Metadata removed successfully!')
+      w(x+': Metadata removed successfully!')
+    elif os.path.getsize('input.txt')==os.path.getsize('output.txt'):
+      print(x+": No significant change!")
+      w(x+':No significant change!')
       
- if mode=='n':
-    c.wait()
-    if os.path.exists('log'):
-      os.remove('log')
+    else:
+      print(x+": No cleaning done!")
+      w(x+':No cleaning done!')
+    os.remove('input.txt')
+    os.remove('output.txt')
+      
+  if mode=='n':
+      c.wait()
+      if os.path.exists('log'):
+        os.remove('log')
 
 # Function to remove metadata of all images from folder.    
 def bulk():

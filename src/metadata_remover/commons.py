@@ -101,3 +101,30 @@ def bcopy(file,file1):
 # Clear screen
 def cls():
     os.system('cls') if platform.system().lower() == 'windows' else os.system('clear')
+
+# Ensure input correlates with arguments
+def validate(path, args):
+    if not os.path.exists(path):
+        print("Path not found.")
+        exit(0)
+    if args.batch and os.path.isfile(path):
+        print("Enter directory name, not file.")
+        exit(0)
+    if not args.batch and os.path.isdir(path):
+        print("Enter file name, not directory.")
+        exit(0)
+
+# Check file type
+def filetype(fn):
+    ext = fn.split('.')[1]
+    if (ext in ['jpg','gif','bmp','tiff','jpeg','png']):
+        return 'i'
+    elif (ext in ['mp4','mov','webm','ogv','flv','wmv','avi','mkv','vob','ogg','3gp']):
+        return 'v'
+    elif ext == 'torrent':
+        return 't'
+    elif ext == 'f':
+        return 'a'
+    else:
+        print(' Unsupported file format.')
+        return 0
